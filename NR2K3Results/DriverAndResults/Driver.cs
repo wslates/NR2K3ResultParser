@@ -4,14 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarFileParser
+namespace NR2K3Results.DriverAndResults
 {
-    class Driver
+    class Driver: IComparable<Driver>
     {
         public string firstName;
         public string lastName;
         public string number;
         public string sponsor;
+        public DriverResult result;
+
+        public int CompareTo(Driver other)
+        {
+            if (other.result.finish>result.finish)
+            {
+                return -1;
+            } else
+            {
+                return 1;
+            }
+        }
 
         public override bool Equals(object obj)
         {
@@ -19,7 +31,9 @@ namespace CarFileParser
 
             Driver driver = obj as Driver;
 
-            if (driver.lastName.Equals(lastName) && driver.firstName[0].Equals(firstName[0]) && driver.number==number)
+            if (driver.lastName.Equals(lastName) && 
+                driver.firstName[0]==firstName[0] && 
+                driver.number.Equals(number))
             {
                 return true;
             }
@@ -27,10 +41,20 @@ namespace CarFileParser
             return false;
         }
 
+        
+
         public override string ToString()
         {
-            return "#" + number + "; " + firstName + " " + lastName + "; " + sponsor;
+            return  "#" + number + 
+                    "; " + firstName + " " + lastName + 
+                    "; " + sponsor + 
+                    "; " + result.finish + 
+                    "; " + result.time + 
+                    "; " + result.timeOffLeader + 
+                    "; " + result.timeOffNext;
         }
+
+        
     }
 
     enum Sessions { Practice, Qualifying, HappyHour }

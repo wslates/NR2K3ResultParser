@@ -9,13 +9,12 @@ namespace NR2K3Results.DriverAndResults
 {
     class DriverResult
     {
-        public Driver driver;
-        public string start;
-        public string finish;
-        public string time;
-        public string timeOffLeader;
-        public string timeOffNext;
-        public string speed;
+        public int start;
+        public int finish;
+        public double time;
+        public double timeOffLeader;
+        public double timeOffNext;
+        public double speed;
 
     }
 }

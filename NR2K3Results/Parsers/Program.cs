@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NR2K3Results.DriverAndResults;
 
 namespace CarFileParser
 {
@@ -34,7 +35,7 @@ namespace CarFileParser
             {
                 if (line.Contains("car_number"))
                 {
-                    driver.number = line.Split('=')[1];
+                    driver.number = line.Split('=')[1].Replace(" ", string.Empty);
                 } else if (line.Contains("first_name"))
                 {
                     driver.firstName = line.Split('=')[1];

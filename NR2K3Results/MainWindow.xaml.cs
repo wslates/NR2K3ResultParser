@@ -1,4 +1,5 @@
 ﻿using CarFileParser;
+using NR2K3Results.DriverAndResults;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace NR2K3Results
                 string[] filePath = openFile.FileName.Split('\\');
                 RosterFileTextBox.Text = filePath[filePath.Length - 1];
                 drivers = CarFileParser.CarFileParser.GetRosterDrivers(System.IO.Path.GetDirectoryName(openFile.FileName), openFile.FileName);
+                
                 OpenResultButton.IsEnabled = true;
             }
             
@@ -56,7 +58,13 @@ namespace NR2K3Results
             if (openFile.ShowDialog() == true)
             {
                 string[] filePath = openFile.FileName.Split('\\');
-                ResultFileTextBox.Text = filePath[filePath.Length - 1]; 
+                ResultFileTextBox.Text = filePath[filePath.Length - 1];
+                NR2K3ResultParser.ResultParser.Parse(ref drivers, openFile.FileName);
+                drivers.Sort();
+                foreach (Driver driver in drivers)
+                {
+                    Console.WriteLine(driver);
+                }
             }
         }
     }
