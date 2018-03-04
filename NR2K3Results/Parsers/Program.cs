@@ -17,7 +17,14 @@ namespace CarFileParser
             foreach (string line in lines)
             {
                 //plus sign at beginning of every line, get rid of that and append to path
-                drivers.Add(OpenCarFile(CarsFilePath + "\\" + line.Substring(1, line.Length - 1)));
+                Driver driver = OpenCarFile(CarsFilePath + "\\" + line.Substring(1, line.Length - 1));
+
+                //won't get a driver multiple times if they have multiple paint schemes
+                if (!drivers.Contains(driver))
+                {
+                    drivers.Add(driver);
+                }
+                
             }
 
             return drivers;

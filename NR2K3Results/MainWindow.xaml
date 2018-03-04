@@ -8,13 +8,9 @@
         Title="MainWindow" Height="381" Width="525" ResizeMode="NoResize">
     <Grid Margin="0,0,0,1">
         <Button x:Name="OpenFileButton" Content="New Result" HorizontalAlignment="Left" Margin="39,307,0,0" VerticalAlignment="Top" Width="103" Height="27"/>
-        <Label Content="Track:" HorizontalAlignment="Left" Margin="39,70,0,0" VerticalAlignment="Top" Width="43" Height="26"/>
         <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="131,256,0,0"/>
         <Label Content="Session Type:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="39,252,0,0"/>
-        <Label Content="Track Length:&#xD;&#xA;(0 by default)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="256,252,0,0"/>
-        <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="341,256,0,0"/>
         <Button x:Name="OpenFileButton_Copy" Content="Output" HorizontalAlignment="Left" Margin="358,307,0,0" VerticalAlignment="Top" Width="103" Height="27"/>
-        <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="330" Margin="131,74,0,0"/>
         <Label Content="Series Name:&#xA;" HorizontalAlignment="Left" Margin="39,133,0,0" VerticalAlignment="Top" Width="85" Height="26"/>
         <Label Content="Series Logo:&#xA;" HorizontalAlignment="Left" Margin="39,164,0,0" VerticalAlignment="Top" Width="85" Height="26"/>
         <Label Content="Sanctioning &#xD;&#xA;Body Logo:" HorizontalAlignment="Left" Margin="39,195,0,0" VerticalAlignment="Top"/>
@@ -32,6 +28,8 @@
         <TextBox x:Name="RosterFileTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" Margin="131,13,0,0" IsEnabled="False"/>
         <Button x:Name="OpenRosterButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="386,13,0,0" Height="23" Click="Open_Roster"/>
         <Button x:Name="OpenResultButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="386,44,0,0" Height="23" Click="Open_Result" IsEnabled="False"/>
+        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="330" Margin="131,76,0,0"/>
+        <Label Content="Track:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="39,72,0,0"/>
 
     </Grid>
 </Window>

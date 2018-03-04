@@ -69,11 +69,24 @@ namespace NR2K3Results.DriverAndResults
 
         public string GetOffLeader()
         {
+            if (GetFinish()==1)
+            {
+                return "---.---";
+            } 
+            
             return Decimal.Round(result.timeOffLeader, 3).ToString();
         }
 
         public string GetOffNext()
         {
+            if (GetFinish() ==1)
+            {
+                return "---.---";
+            } else if(result.timeOffNext == 0)
+            {
+                return "-" + Decimal.Round(result.timeOffNext, 3).ToString();
+            }
+
             return Decimal.Round(result.timeOffNext, 3).ToString();
         }
         public override string ToString()

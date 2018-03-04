@@ -25,8 +25,8 @@ namespace NR2K3Results
     public partial class MainWindow : Window
     {
         private List<Driver> drivers;
-        private OpenFileDialog rosterFile;
         private OpenFileDialog resultFile;
+
         public MainWindow()
         {
             InitializeComponent();

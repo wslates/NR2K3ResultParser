@@ -60,7 +60,8 @@ namespace NR2K3ResultParser
                     finish = Convert.ToInt16(result[0]),
                     time = Convert.ToDecimal(result[3]),
                     timeOffLeader = fastTime - Convert.ToDecimal(result[3]),
-                    timeOffNext = prevTime - Convert.ToDecimal(result[3])
+                    timeOffNext = prevTime - Convert.ToDecimal(result[3]),
+                    speed = ((decimal)1.5/ Convert.ToDecimal(result[3]))  * 3600
                 };
 
                 string[] name = result[2].Split(' ');

@@ -13,7 +13,8 @@ namespace NR2K3Results.PDFGeneration
 {
     class PDFGenerators
     {
-        private static float[] widths = { 7f, 7f, 30f, 40f, 12f, 12f, 12f, 12f };
+        private static float[] widths = { 5f, 6f, 17f, 30f, 7f, 10f, 6f, 7f, 10f, 10f };
+        private static Random rand = new Random();
         public static void OutputPracticePDF(List<Driver> drivers, string series, string selectedSession, string raceName)
         {
             HappyHourPracticePDFGen(drivers, series, selectedSession, raceName);
@@ -46,16 +47,6 @@ namespace NR2K3Results.PDFGeneration
             };
             document.Add(session);
 
-
-            PdfPTable results = new PdfPTable(8)
-            {
-                //set table to be total width of document excluding margins
-                WidthPercentage = 100f
-            };
-
-            
-
-
             document.Add(GenerateTopRow());
            
             document.Add(GenerateDriverRows(drivers));
@@ -65,25 +56,27 @@ namespace NR2K3Results.PDFGeneration
         private static PdfPTable GenerateTopRow()
         {
             
-            PdfPTable table = new PdfPTable(8)
+            PdfPTable table = new PdfPTable(10)
             {
                 //set table to be total width of document excluding margins
                 WidthPercentage = 100f,
             };
             table.SetWidths(widths);
 
-            string[] cols = { "Pos", "Car", "Driver", "Team", "Time", "Speed", "-Fastest", "-Next" };
-            
-            foreach (string column in cols)
-            {
-                PdfPCell cell = new PdfPCell(new Phrase(column, FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.BOLD)))
+            string[] cols = { "Pos", "Car", "Driver", "Sponsor", "Time", "Speed", "Lap #", "# Laps", "-Fastest", "-Next" };
+            int[] justify = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_LEFT, Element.ALIGN_LEFT, Element.ALIGN_RIGHT,
+                             Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT };
+            for(int i = 0; i<10; i++)
+            {  
+                PdfPCell cell = new PdfPCell(new Phrase(cols[i], FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.BOLD)))
                 {
                     //sets only top and bottom border visible
                     Border = Rectangle.BOTTOM_BORDER | Rectangle.TOP_BORDER,
                     Colspan = 1,
                     //negate padding
                     PaddingTop = -2,
-                    PaddingBottom = 1
+                    PaddingBottom = 1,
+                    HorizontalAlignment = justify[i]
                 };
                 table.AddCell(cell);
             }
@@ -94,7 +87,7 @@ namespace NR2K3Results.PDFGeneration
 
         private static PdfPTable GenerateDriverRows(List<Driver> drivers)
         {
-            PdfPTable table = new PdfPTable(8)
+            PdfPTable table = new PdfPTable(10)
             {
                 //set table to be total width of document excluding margins
                 WidthPercentage = 100f,
@@ -103,36 +96,61 @@ namespace NR2K3Results.PDFGeneration
 
             foreach (Driver driver in drivers)
             {
-                table.AddCell(GenerateDriverCell(driver.GetFinish().ToString(), driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.number, driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish()));
-                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish()));
+                table.AddCell(GenerateDriverCell(driver.GetFinish().ToString(), driver.GetFinish(), 0, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.number, driver.GetFinish(), 1, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish(), 2, Element.ALIGN_LEFT));
+                table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish(), 3, Element.ALIGN_LEFT));
+                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish(), 4, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish(), 5, Element.ALIGN_RIGHT));
+
+                string[] laps = GenerateLaps();
+
+                table.AddCell(GenerateDriverCell(laps[1], driver.GetFinish(), 6, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(laps[0], driver.GetFinish(), 7, Element.ALIGN_RIGHT));
+
+                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish(), 8, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish(), 9, Element.ALIGN_RIGHT));
             }
 
             return table;
         }
 
-        private static PdfPCell GenerateDriverCell(string data, int pos)
+        private static PdfPCell GenerateDriverCell(string data, int verPos, int horizPos, int justify)
         {
             int border = 0;
-            if (pos%3==0)
+
+            //determine whether or not to have line underneath this row.
+            if (verPos%3==0)
             {
                 border = Rectangle.BOTTOM_BORDER;
-            } 
+            }
 
+            if (data.Length>10)
+            {
+                while (FontFactory.GetFont(FontFactory.HELVETICA, 9).BaseFont.GetWidthPoint(data, 9) > widths[horizPos] * 4.64)
+                {
+                    data = data.Substring(0, (data.Length - 1));
+                }
+            }
+           
+            
             return new PdfPCell(new Phrase(data, FontFactory.GetFont(FontFactory.HELVETICA, 9)))
             {
-                //sets only top and bottom border visible
                 Border = border,
                 Colspan = 1,
-                //negate padding
                 PaddingTop = 2,
-                PaddingBottom = 2
+                PaddingBottom = 2,
+                HorizontalAlignment = justify, 
+                
             };
+        }
+
+        private static string[] GenerateLaps()
+        {
+            string[] cells = new string[2];
+            cells[0] = rand.Next(5, 50).ToString();          
+            cells[1] = rand.Next(5, Convert.ToInt16(cells[0])).ToString();
+            return cells;
         }
     }
 }
