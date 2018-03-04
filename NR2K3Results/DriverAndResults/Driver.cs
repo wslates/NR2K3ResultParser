@@ -12,6 +12,7 @@ namespace NR2K3Results.DriverAndResults
         public string lastName;
         public string number;
         public string sponsor;
+        public string team;
         public DriverResult result;
 
         public int CompareTo(Driver other)
@@ -48,6 +49,7 @@ namespace NR2K3Results.DriverAndResults
             return  "#" + number + 
                     "; " + firstName + " " + lastName + 
                     "; " + sponsor + 
+                    "; " + team +
                     "; " + result.finish + 
                     "; " + result.time + 
                     "; " + result.timeOffLeader + 

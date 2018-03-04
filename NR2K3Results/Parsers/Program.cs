@@ -44,9 +44,11 @@ namespace CarFileParser
                     driver.lastName = line.Split('=')[1];
                 } else if (line.Contains("sponsor"))
                 {
-                    driver.sponsor = line.Split('=')[1];
-                    break;
-                }    
+                    driver.sponsor = line.Split('=')[1]; 
+                } else if (line.Contains("team"))
+                {
+                    driver.team = line.Split('=')[1];
+                }  
             }
             return driver;
 
