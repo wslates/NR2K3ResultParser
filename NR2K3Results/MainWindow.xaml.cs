@@ -25,6 +25,8 @@ namespace NR2K3Results
     public partial class MainWindow : Window
     {
         private List<Driver> drivers;
+        private OpenFileDialog rosterFile;
+        private OpenFileDialog resultFile;
         public MainWindow()
         {
             InitializeComponent();
@@ -50,21 +52,18 @@ namespace NR2K3Results
 
         private void Open_Result(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFile = new OpenFileDialog
+            resultFile = new OpenFileDialog
             {
                 Filter = "HTML Files (*.html)|*.html"
             };
 
-            if (openFile.ShowDialog() == true)
+            if (resultFile.ShowDialog() == true)
             {
-                string[] filePath = openFile.FileName.Split('\\');
+                string[] filePath = resultFile.FileName.Split('\\');
                 ResultFileTextBox.Text = filePath[filePath.Length - 1];
-                NR2K3ResultParser.ResultParser.Parse(ref drivers, openFile.FileName);
+                NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName);
                 drivers.Sort();
-                foreach (Driver driver in drivers)
-                {
-                    Console.WriteLine(driver);
-                }
+                PDFGeneration.PDFGenerators.OutputPracticePDF(drivers, null, null, null);
             }
         }
     }

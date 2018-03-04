@@ -13,7 +13,19 @@ namespace NR2K3Results.DriverAndResults
         public string number;
         public string sponsor;
         public string team;
-        public DriverResult result;
+        private DriverResult result;
+        public DriverResult DriverResult
+        {
+            get
+            {
+                return result;
+            }
+            set
+            {
+                result = value;
+            }
+           
+        }
 
         public int CompareTo(Driver other)
         {
@@ -41,9 +53,29 @@ namespace NR2K3Results.DriverAndResults
 
             return false;
         }
+        public int GetFinish()
+        {
+            return result.finish;
+        }
+        public string GetSpeed()
+        {
+            return Decimal.Round(result.speed, 3).ToString();
+        }
 
-        
+        public string GetTime()
+        {
+            return Decimal.Round(result.time, 3).ToString();
+        }
 
+        public string GetOffLeader()
+        {
+            return Decimal.Round(result.timeOffLeader, 3).ToString();
+        }
+
+        public string GetOffNext()
+        {
+            return Decimal.Round(result.timeOffNext, 3).ToString();
+        }
         public override string ToString()
         {
             return  "#" + number + 

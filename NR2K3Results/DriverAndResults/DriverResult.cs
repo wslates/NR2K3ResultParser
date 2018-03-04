@@ -11,10 +11,10 @@ namespace NR2K3Results.DriverAndResults
     {
         public int start;
         public int finish;
-        public double time;
-        public double timeOffLeader;
-        public double timeOffNext;
-        public double speed;
+        public decimal time;
+        public decimal timeOffLeader;
+        public decimal timeOffNext;
+        public decimal speed;
 
     }
 }

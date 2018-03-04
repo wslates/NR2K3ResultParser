@@ -49,8 +49,8 @@ namespace NR2K3ResultParser
 
 
 
-            double fastTime = Convert.ToDouble(finalResults.GetRange(0, 4)[3]);
-            double prevTime = fastTime;
+            decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 4)[3]);
+            decimal prevTime = fastTime;
             for (int i = 0; i < finalResults.Count-3; i+=4)
             {
                 
@@ -58,9 +58,9 @@ namespace NR2K3ResultParser
                 DriverResult driverRes = new DriverResult
                 {
                     finish = Convert.ToInt16(result[0]),
-                    time = Convert.ToDouble(result[3]),
-                    timeOffLeader = fastTime - Convert.ToDouble(result[3]),
-                    timeOffNext = prevTime - Convert.ToDouble(result[3])
+                    time = Convert.ToDecimal(result[3]),
+                    timeOffLeader = fastTime - Convert.ToDecimal(result[3]),
+                    timeOffNext = prevTime - Convert.ToDecimal(result[3])
                 };
 
                 string[] name = result[2].Split(' ');
@@ -70,22 +70,22 @@ namespace NR2K3ResultParser
                     number = result[1],
                     firstName = result[2][0].ToString(),
                     lastName = result[2].Substring(2, result[2].Length-2),
-                    result = driverRes
+                    DriverResult = driverRes
                 };
 
-                prevTime = Convert.ToDouble(result[3]);
+                prevTime = Convert.ToDecimal(result[3]);
 
   
                 if (drivers.Contains(driver))
                 {
-                    drivers[drivers.IndexOf(driver)].result = driverRes;
+                    drivers[drivers.IndexOf(driver)].DriverResult = driverRes;
                 }
 
                 
             }
 
             //in case some drivers were in the roster but not in the race, remove them
-            drivers = drivers.Where(d => d.result != null).ToList();
+            drivers = drivers.Where(d => d.DriverResult != null).ToList();
         }
     }
 }
