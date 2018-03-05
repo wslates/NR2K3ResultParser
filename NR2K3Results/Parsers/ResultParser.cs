@@ -12,7 +12,7 @@ namespace NR2K3ResultParser
     class ResultParser
     {
 
-        public static void Parse(ref List<Driver> drivers, string FilePath)
+        public static void Parse(ref List<Driver> drivers, string FilePath, decimal length)
         {
             HtmlDocument doc = new HtmlDocument();
 
@@ -61,7 +61,7 @@ namespace NR2K3ResultParser
                     time = Convert.ToDecimal(result[3]),
                     timeOffLeader = fastTime - Convert.ToDecimal(result[3]),
                     timeOffNext = prevTime - Convert.ToDecimal(result[3]),
-                    speed = ((decimal)1.5/ Convert.ToDecimal(result[3]))  * 3600
+                    speed = (length/ Convert.ToDecimal(result[3]))  * 3600
                 };
 
                 string[] name = result[2].Split(' ');

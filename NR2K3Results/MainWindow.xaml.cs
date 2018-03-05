@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace NR2K3Results
 {
@@ -26,6 +27,8 @@ namespace NR2K3Results
     {
         private List<Driver> drivers;
         private OpenFileDialog resultFile;
+        private string track = "";
+        private decimal trackLength = 0;
 
         public MainWindow()
         {
@@ -61,9 +64,44 @@ namespace NR2K3Results
             {
                 string[] filePath = resultFile.FileName.Split('\\');
                 ResultFileTextBox.Text = filePath[filePath.Length - 1];
-                NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName);
+                NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName, trackLength);
                 drivers.Sort();
-                PDFGeneration.PDFGenerators.OutputPracticePDF(drivers, null, null, null);
+                PDFGeneration.PDFGenerators.OutputPracticePDF(drivers, null, null, null, track);
+            }
+        }
+
+        private void OpenTrack(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog
+            {
+                Filter = ".ini Files (*.ini)|*.ini"
+            };
+
+            if (openFile.ShowDialog() == true)
+            {
+                string[] filePath = openFile.FileName.Split('\\');
+                TrackFileTextBox.Text = filePath[filePath.Length - 1];
+                
+                try
+                {
+                    var lines = System.IO.File.ReadLines(openFile.FileName).Take(20);
+                    foreach (string line in lines)
+                    {
+                        if (line.Split('=')[0].Replace(" ", string.Empty).Equals("track_name"))
+                        {
+                            track = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(line.Split('=')[1].ToLower());
+                            
+                        } else if (line.Split('=')[0].Replace(" ", string.Empty).Equals("track_length"))
+                        {
+                            trackLength = Convert.ToDecimal(line.Split('=')[1].Replace(" ", string.Empty).Replace("m", string.Empty));
+                        }
+                    }
+
+                } catch (Exception ex)
+                {
+
+                }
+               
             }
         }
     }

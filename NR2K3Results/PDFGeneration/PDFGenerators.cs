@@ -15,12 +15,12 @@ namespace NR2K3Results.PDFGeneration
     {
         private static float[] widths = { 5f, 6f, 17f, 30f, 7f, 10f, 6f, 7f, 10f, 10f };
         private static Random rand = new Random();
-        public static void OutputPracticePDF(List<Driver> drivers, string series, string selectedSession, string raceName)
+        public static void OutputPracticePDF(List<Driver> drivers, string series, string selectedSession, string raceName, string track)
         {
-            HappyHourPracticePDFGen(drivers, series, selectedSession, raceName);
+            HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
         }
 
-        private static void HappyHourPracticePDFGen(List<Driver> drivers, string selectedSession, string series, string raceName)
+        private static void HappyHourPracticePDFGen(List<Driver> drivers, string selectedSession, string series, string raceName, string track)
         {
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;
@@ -31,7 +31,7 @@ namespace NR2K3Results.PDFGeneration
             //build title
             StringBuilder title = new StringBuilder();
             title.AppendLine("MENCS Practice 1");
-            title.AppendLine("Las Vegas Motor Speedway");
+            title.AppendLine(track);
             title.AppendLine("Pennzoil 400");
 
 
