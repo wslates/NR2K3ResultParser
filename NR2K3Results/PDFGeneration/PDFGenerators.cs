@@ -15,6 +15,7 @@ namespace NR2K3Results.PDFGeneration
     {
         private static float[] widths = { 5f, 6f, 17f, 30f, 7f, 10f, 6f, 7f, 10f, 10f };
         private static Random rand = new Random();
+
         public static void OutputPracticePDF(List<Driver> drivers, string series, string selectedSession, string raceName, string track)
         {
             HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
@@ -25,32 +26,41 @@ namespace NR2K3Results.PDFGeneration
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;
            
-            fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
-           
-
-            //build title
-            StringBuilder title = new StringBuilder();
-            title.AppendLine("MENCS Practice 1");
-            title.AppendLine(track);
-            title.AppendLine("Pennzoil 400");
-
-
-            PdfWriter write = PdfWriter.GetInstance(document, fs);
-            document.Open();
-
-            //title
-            Paragraph session = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 14, Font.BOLD))
+            try
             {
-                Alignment = Element.TITLE,
-                Leading = 17,
-                SpacingAfter = 25
-            };
-            document.Add(session);
+                fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
 
-            document.Add(GenerateTopRow());
+                //build title
+                StringBuilder title = new StringBuilder();
+                title.AppendLine("MENCS Practice 1");
+                title.AppendLine(track);
+                title.AppendLine("Pennzoil 400");
+
+
+                PdfWriter write = PdfWriter.GetInstance(document, fs);
+                document.Open();
+
+                //title
+                Paragraph session = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 14, Font.BOLD))
+                {
+                    Alignment = Element.TITLE,
+                    Leading = 17,
+                    SpacingAfter = 25
+                };
+                document.Add(session);
+
+                document.Add(GenerateTopRow());
+
+                document.Add(GenerateDriverRows(drivers));
+                document.Close();
+            } catch (IOException e)
+            {
+                return;
+            }
+            
            
-            document.Add(GenerateDriverRows(drivers));
-            document.Close();
+
+            
         }
 
         private static PdfPTable GenerateTopRow()
