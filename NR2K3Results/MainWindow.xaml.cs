@@ -28,7 +28,7 @@ namespace NR2K3Results
     {
         private List<Driver> drivers;
         private string track = "";
-        private decimal trackLength = .5m;
+        private decimal trackLength;
 
         public MainWindow()
         {
@@ -66,7 +66,7 @@ namespace NR2K3Results
                 GetTrackData(resultFile.FileName);
                 NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName, trackLength);
                 drivers.Sort();
-                PDFGeneration.PracticePDFGenerators.OutputPracticePDF(drivers, null, null, null, track);
+                PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, null, null, null, track);
             } 
         }
 
@@ -132,6 +132,10 @@ namespace NR2K3Results
                 }
                 
             }
+
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
+            track = textInfo.ToTitleCase(track.ToLower());
         }
 
     }

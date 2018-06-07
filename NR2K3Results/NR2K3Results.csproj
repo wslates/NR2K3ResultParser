@@ -76,9 +76,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parsers\Program.cs" />
+    <Compile Include="Parsers\CarFileParser.cs" />
     <Compile Include="Parsers\ResultParser.cs" />
-    <Compile Include="PDFGeneration\PDFGenerators.cs" />
+    <Compile Include="PDFGeneration\PracticePDFGenerators.cs" />
+    <Compile Include="PDFGeneration\QualifyingPDFGenerator.cs" />
+    <Compile Include="PDFGeneration\SessionTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -13,10 +13,11 @@ namespace NR2K3Results.PDFGeneration
 {
     class PracticePDFGenerators
     {
-        private static float[] widths = { 5f, 6f, 17f, 30f, 7f, 10f, 6f, 7f, 10f, 10f };
+        
         private static Random rand = new Random();
 
-        public static void OutputPracticePDF(List<Driver> drivers, string series, string selectedSession, string raceName, string track)
+
+        public static void OutputPDF(List<Driver> drivers, string series, string selectedSession, string raceName, string track)
         {
             HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
         }
@@ -49,9 +50,9 @@ namespace NR2K3Results.PDFGeneration
                 };
                 document.Add(session);
 
-                document.Add(GenerateTopRow());
+                document.Add(GenerateTopRow(ref SessionData.PRACTICECOLUMNWIDTHS, ref SessionData.PRACTICECOLUMNS));
            
-                document.Add(GenerateDriverRows(drivers));
+                document.Add(GenerateDriverRows(drivers, ref SessionData.PRACTICECOLUMNWIDTHS));
                 document.Close();
             } catch (IOException e)
             {
@@ -59,22 +60,20 @@ namespace NR2K3Results.PDFGeneration
             } 
         }
 
-        private static PdfPTable GenerateTopRow()
+        private static PdfPTable GenerateTopRow(ref float[] widths, ref List<Tuple<string, int>> tableData)
         {
             
-            PdfPTable table = new PdfPTable(10)
+            PdfPTable table = new PdfPTable(tableData.Count)
             {
                 //set table to be total width of document excluding margins
                 WidthPercentage = 100f,
             };
             table.SetWidths(widths);
 
-            string[] cols = { "Pos", "Car", "Driver", "Sponsor", "Time", "Speed", "Lap #", "# Laps", "-Fastest", "-Next" };
-            int[] justify = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_LEFT, Element.ALIGN_LEFT, Element.ALIGN_RIGHT,
-                             Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT };
-            for(int i = 0; i<10; i++)
+          
+            foreach(Tuple<string, int> column in tableData)
             {  
-                PdfPCell cell = new PdfPCell(new Phrase(cols[i], FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.BOLD)))
+                PdfPCell cell = new PdfPCell(new Phrase(column.Item1, FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.BOLD)))
                 {
                     //sets only top and bottom border visible
                     Border = Rectangle.BOTTOM_BORDER | Rectangle.TOP_BORDER,
@@ -82,7 +81,7 @@ namespace NR2K3Results.PDFGeneration
                     //negate padding
                     PaddingTop = -2,
                     PaddingBottom = 1,
-                    HorizontalAlignment = justify[i]
+                    HorizontalAlignment = column.Item2
                 };
                 table.AddCell(cell);
             }
@@ -91,9 +90,9 @@ namespace NR2K3Results.PDFGeneration
             
         }
 
-        private static PdfPTable GenerateDriverRows(List<Driver> drivers)
+        private static PdfPTable GenerateDriverRows(List<Driver> drivers, ref float[] widths)
         {
-            PdfPTable table = new PdfPTable(10)
+            PdfPTable table = new PdfPTable(widths.Length)
             {
                 //set table to be total width of document excluding margins
                 WidthPercentage = 100f,
@@ -102,26 +101,26 @@ namespace NR2K3Results.PDFGeneration
 
             foreach (Driver driver in drivers)
             {
-                table.AddCell(GenerateDriverCell(driver.GetFinish().ToString(), driver.GetFinish(), 0, Element.ALIGN_RIGHT));
-                table.AddCell(GenerateDriverCell(driver.number, driver.GetFinish(), 1, Element.ALIGN_RIGHT));
-                table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish(), 2, Element.ALIGN_LEFT));
-                table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish(), 3, Element.ALIGN_LEFT));
-                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish(), 4, Element.ALIGN_RIGHT));
-                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish(), 5, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.GetFinish().ToString(), driver.GetFinish(), 0, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.number, driver.GetFinish(), 1, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish(), 2, Element.ALIGN_LEFT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish(), 3, Element.ALIGN_LEFT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish(), 4, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish(), 5, Element.ALIGN_RIGHT, ref widths));
 
                 string[] laps = GenerateLaps();
 
-                table.AddCell(GenerateDriverCell(laps[1], driver.GetFinish(), 6, Element.ALIGN_RIGHT));
-                table.AddCell(GenerateDriverCell(laps[0], driver.GetFinish(), 7, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(laps[1], driver.GetFinish(), 6, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(laps[0], driver.GetFinish(), 7, Element.ALIGN_RIGHT, ref widths));
 
-                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish(), 8, Element.ALIGN_RIGHT));
-                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish(), 9, Element.ALIGN_RIGHT));
+                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish(), 8, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish(), 9, Element.ALIGN_RIGHT, ref widths));
             }
 
             return table;
         }
 
-        private static PdfPCell GenerateDriverCell(string data, int verPos, int horizPos, int justify)
+        private static PdfPCell GenerateDriverCell(string data, int verPos, int horizPos, int justify, ref float[] widths)
         {
             int border = 0;
 
