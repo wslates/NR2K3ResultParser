@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace NR2K3Results
 {
@@ -26,9 +27,8 @@ namespace NR2K3Results
     public partial class MainWindow : Window
     {
         private List<Driver> drivers;
-        private OpenFileDialog resultFile;
         private string track = "";
-        private decimal trackLength = 0;
+        private decimal trackLength = .5m;
 
         public MainWindow()
         {
@@ -42,12 +42,11 @@ namespace NR2K3Results
                 Filter = ".lst Files (*.lst)|*.lst"
             };
             
-            if (openFile.ShowDialog()==true)
+            if (openFile.ShowDialog() == true)
             {
                 string[] filePath = openFile.FileName.Split('\\');
                 RosterFileTextBox.Text = filePath[filePath.Length - 1];
-                drivers = CarFileParser.CarFileParser.GetRosterDrivers(System.IO.Path.GetDirectoryName(openFile.FileName), openFile.FileName);
-                
+                drivers = CarFileParser.CarFileParser.GetRosterDrivers(System.IO.Path.GetDirectoryName(openFile.FileName), openFile.FileName);              
                 OpenResultButton.IsEnabled = true;
             }
             
@@ -55,7 +54,7 @@ namespace NR2K3Results
 
         private void Open_Result(object sender, RoutedEventArgs e)
         {
-            resultFile = new OpenFileDialog
+            OpenFileDialog resultFile = new OpenFileDialog
             {
                 Filter = "HTML Files (*.html)|*.html"
             };
@@ -64,45 +63,76 @@ namespace NR2K3Results
             {
                 string[] filePath = resultFile.FileName.Split('\\');
                 ResultFileTextBox.Text = filePath[filePath.Length - 1];
+                GetTrackData(resultFile.FileName);
                 NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName, trackLength);
                 drivers.Sort();
-                PDFGeneration.PDFGenerators.OutputPracticePDF(drivers, null, null, null, track);
-            }
+                PDFGeneration.PracticePDFGenerators.OutputPracticePDF(drivers, null, null, null, track);
+            } 
         }
 
-        private void OpenTrack(object sender, RoutedEventArgs e)
+        private void GetTrackData(string filepath)
         {
-            OpenFileDialog openFile = new OpenFileDialog
+            string path = @filepath;
+            string line;
+            StreamReader file = new StreamReader(path);
+            while((line = file.ReadLine()) != null)
             {
-                Filter = ".ini Files (*.ini)|*.ini"
-            };
+                if (line.Contains("Track: "))
+                {
+                    track = line.Split(':')[1].Trim();               
+                    break;
+                }
+            }
+            //gets imports/exports path
+            path = Directory.GetParent(path).FullName;
 
-            if (openFile.ShowDialog() == true)
+            //gets NR2003 root directory
+            path = Directory.GetParent(path).FullName;
+
+            //goes to tracks
+            path += "\\tracks";
+
+            //gets all directories in that folder, i.e. the tracks
+            string[] tracks = Directory.GetDirectories(path);
+            bool trackFound = false;
+
+            foreach (string track in tracks)
             {
-                string[] filePath = openFile.FileName.Split('\\');
-                TrackFileTextBox.Text = filePath[filePath.Length - 1];
-                
                 try
                 {
-                    var lines = System.IO.File.ReadLines(openFile.FileName).Take(20);
-                    foreach (string line in lines)
+                    file = new StreamReader(track + "\\track.ini");
+
+                    while ((line = file.ReadLine()) != null)
                     {
-                        if (line.Split('=')[0].Replace(" ", string.Empty).Equals("track_name"))
+                        string[] splitLine = line.Split('=');
+                        if (splitLine[0].Trim().Equals("track_name"))
                         {
-                            track = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(line.Split('=')[1].ToLower());
-                            
-                        } else if (line.Split('=')[0].Replace(" ", string.Empty).Equals("track_length"))
+                            //if this is not the track we want, move on to the next folder
+                            if (!splitLine[1].Trim().Equals(this.track))
+                            {
+                                break;
+                            }
+                            else
+                                trackFound = true;
+                        }
+                        else if (splitLine[0].Trim().Equals("track_length"))
                         {
-                            trackLength = Convert.ToDecimal(line.Split('=')[1].Replace(" ", string.Empty).Replace("m", string.Empty));
+                            string length = splitLine[1];
+                            length = Regex.Replace(length, "[^0-9.]", "");
+                            trackLength = Convert.ToDecimal(length);
                         }
                     }
-
-                } catch (Exception ex)
+                    //if we found the track, we should stop there
+                    if (trackFound)
+                        break;
+                } catch (IOException e)
                 {
-
+                    //just means we hit a folder without a track.ini file, such as the "shared" folder
+                    continue;
                 }
-               
+                
             }
         }
+
     }
 }

@@ -46,11 +46,9 @@ namespace NR2K3ResultParser
                 }
             }
 
-
-
-
             decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 4)[3]);
             decimal prevTime = fastTime;
+
             for (int i = 0; i < finalResults.Count-3; i+=4)
             {
                 
@@ -71,7 +69,7 @@ namespace NR2K3ResultParser
                     number = result[1],
                     firstName = result[2][0].ToString(),
                     lastName = result[2].Substring(2, result[2].Length-2),
-                    DriverResult = driverRes
+                    result = driverRes
                 };
 
                 prevTime = Convert.ToDecimal(result[3]);
@@ -79,14 +77,14 @@ namespace NR2K3ResultParser
   
                 if (drivers.Contains(driver))
                 {
-                    drivers[drivers.IndexOf(driver)].DriverResult = driverRes;
+                    drivers[drivers.IndexOf(driver)].result = driverRes;
                 }
 
                 
             }
 
             //in case some drivers were in the roster but not in the race, remove them
-            drivers = drivers.Where(d => d.DriverResult != null).ToList();
+            drivers = drivers.Where(d => d.result != null).ToList();
         }
     }
 }

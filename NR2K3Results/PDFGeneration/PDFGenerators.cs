@@ -11,7 +11,7 @@ using NR2K3Results.DriverAndResults;
 
 namespace NR2K3Results.PDFGeneration
 {
-    class PDFGenerators
+    class PracticePDFGenerators
     {
         private static float[] widths = { 5f, 6f, 17f, 30f, 7f, 10f, 6f, 7f, 10f, 10f };
         private static Random rand = new Random();
@@ -50,17 +50,13 @@ namespace NR2K3Results.PDFGeneration
                 document.Add(session);
 
                 document.Add(GenerateTopRow());
-
+           
                 document.Add(GenerateDriverRows(drivers));
                 document.Close();
             } catch (IOException e)
             {
                 return;
-            }
-            
-           
-
-            
+            } 
         }
 
         private static PdfPTable GenerateTopRow()
@@ -130,7 +126,7 @@ namespace NR2K3Results.PDFGeneration
             int border = 0;
 
             //determine whether or not to have line underneath this row.
-            if (verPos%3==0)
+            if (verPos % 3 == 0)
             {
                 border = Rectangle.BOTTOM_BORDER;
             }

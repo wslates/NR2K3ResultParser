@@ -29,8 +29,6 @@
         <Button x:Name="OpenRosterButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="386,13,0,0" Height="23" Click="Open_Roster"/>
         <Button x:Name="OpenResultButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="386,44,0,0" Height="23" Click="Open_Result" IsEnabled="False"/>
         <Label Content="Track:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="39,72,0,0"/>
-        <TextBox x:Name="TrackFileTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" Margin="131,75,0,0" IsEnabled="False"/>
-        <Button x:Name="OpenTrackButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="386,75,0,0" Height="23" Click="OpenTrack"/>
 
     </Grid>
 </Window>
