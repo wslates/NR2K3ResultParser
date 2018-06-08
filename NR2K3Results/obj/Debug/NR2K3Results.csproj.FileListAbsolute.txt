@@ -36,3 +36,7 @@ C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\obj\Debug\NR2K3Re
 C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\obj\Debug\NR2K3Results.pdb
 C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\itextsharp.dll
 C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\itextsharp.xml
+C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\wesle\Documents\GitHub\NR2K3ResultParser\NR2K3Results\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml

@@ -79,9 +79,9 @@ namespace NR2K3Results.Parsers
                 {
                     finish = Convert.ToInt16(result[0]),
                     time = (result[3].Equals("--")) ? 0 : Convert.ToDecimal(result[3]),
-                    timeOffLeader = fastTime - Convert.ToDecimal(result[3]),
-                    timeOffNext = prevTime - Convert.ToDecimal(result[3]),
-                    speed = (length / Convert.ToDecimal(result[3])) * 3600
+                    timeOffLeader = (result[3].Equals("--")) ? 0 : fastTime - Convert.ToDecimal(result[3]),
+                    timeOffNext = (result[3].Equals("--")) ? 0 : prevTime - Convert.ToDecimal(result[3]),
+                    speed = (result[3].Equals("--")) ? 0 : (length / Convert.ToDecimal(result[3])) * 3600
                 };
 
 
@@ -95,12 +95,15 @@ namespace NR2K3Results.Parsers
                     result = driverRes
                 };
 
-                prevTime = Convert.ToDecimal(result[3]);
+                prevTime = (result[3].Equals("--")) ? 0 : Convert.ToDecimal(result[3]);
 
 
                 if (drivers.Contains(driver))
                 {
                     drivers[drivers.IndexOf(driver)].result = driverRes;
+                } else
+                {
+                    
                 }
 
 
