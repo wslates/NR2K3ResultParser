@@ -95,7 +95,6 @@ namespace NR2K3Results.DriverAndResults
 
         
     }
-
-    enum Sessions { Practice, Qualifying, HappyHour }
+   
         
 }

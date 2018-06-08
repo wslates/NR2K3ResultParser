@@ -51,14 +51,12 @@ namespace NR2K3Results.Parsers
                         if (splitLine[0].Trim().Equals("track_name"))
                         {
                             //if this is not the track we want, move on to the next folder
-                            if (splitLine[1].Trim().Equals(retTrack.name))
+                            if (!splitLine[1].Trim().Equals(retTrack.name))
                             {
                                 break;
                             }
                             else
-                                trackFound = true;
-                            
-                             
+                                trackFound = true;    
                         }
                         else if (splitLine[0].Trim().Equals("track_length"))
                         {

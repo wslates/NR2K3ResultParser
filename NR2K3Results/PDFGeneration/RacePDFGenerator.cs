@@ -42,15 +42,95 @@ namespace NR2K3Results.PDFGeneration
                 };
                 document.Add(session);
 
-               // document.Add(GenerateTopRow(ref SessionData.PRACTICECOLUMNWIDTHS, ref SessionData.PRACTICECOLUMNS));
 
-                //document.Add(GenerateDriverRows(drivers, ref SessionData.PRACTICECOLUMNWIDTHS));
+                document.Add(GenerateTopRow(ref SessionData.RACECOLUMNWIDTHS, ref SessionData.RACECOLUMNS));
+
+                document.Add(GenerateDriverRows(drivers, ref SessionData.RACECOLUMNWIDTHS));
                 document.Close();
             }
             catch (IOException e)
             {
                 return;
             }
+        }
+
+        private static PdfPTable GenerateTopRow(ref float[] widths, ref List<Tuple<string, int>> tableData)
+        {
+
+            PdfPTable table = new PdfPTable(tableData.Count)
+            {
+                //set table to be total width of document excluding margins
+                WidthPercentage = 100f,
+            };
+            table.SetWidths(widths);
+
+
+            foreach (Tuple<string, int> column in tableData)
+            {
+                PdfPCell cell = new PdfPCell(new Phrase(column.Item1, FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.BOLD)))
+                {
+                    //sets only top border visible
+                    Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER,
+                    BorderWidthTop = 3f,
+                    Colspan = 1,
+                    //negate padding
+                    PaddingTop = 4,
+                    PaddingBottom = 1,
+                    HorizontalAlignment = column.Item2
+                };
+                table.AddCell(cell);
+            }
+
+            return table;
+
+        }
+
+        private static PdfPTable GenerateDriverRows(List<Driver> drivers, ref float[] widths)
+        {
+            PdfPTable table = new PdfPTable(widths.Length)
+            {
+                //set table to be total width of document excluding margins
+                WidthPercentage = 100f,
+            };
+            table.SetWidths(widths);
+
+            foreach (Driver driver in drivers)
+            {
+                table.AddCell(GenerateDriverCell(driver.GetFinish().ToString(), driver.GetFinish(), 0, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.result.start.ToString(), driver.GetFinish(), 1, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.number.ToString(), driver.GetFinish(), 2, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish(), 3, Element.ALIGN_LEFT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish(), 4, Element.ALIGN_LEFT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.team, driver.GetFinish(), 5, Element.ALIGN_LEFT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.result.laps.ToString(), driver.GetFinish(), 6, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.result.status, driver.GetFinish(), 7, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.result.lapsLed.ToString(), driver.GetFinish(), 8, Element.ALIGN_RIGHT, ref widths));
+            }
+
+            return table;
+        }
+
+        private static PdfPCell GenerateDriverCell(string data, int verPos, int horizPos, int justify, ref float[] widths)
+        {
+            float fontSize = 9f;
+
+            if (data != null)
+            {
+                while ((FontFactory.GetFont(FontFactory.HELVETICA, fontSize).BaseFont.GetWidthPoint(data, fontSize)) > widths[horizPos] * 4.25)
+                {
+                    fontSize -= .1f;
+                }
+            }
+
+            return new PdfPCell(new Phrase(data, FontFactory.GetFont(FontFactory.HELVETICA, fontSize)))
+            {
+                Border = Rectangle.BOTTOM_BORDER,
+                Colspan = 1,
+                PaddingTop = 2,
+                PaddingBottom = 2,
+                HorizontalAlignment = justify,
+
+            };
         }
 
 
