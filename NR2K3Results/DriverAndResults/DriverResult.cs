@@ -15,6 +15,8 @@ namespace NR2K3Results.DriverAndResults
         public decimal timeOffLeader;
         public decimal timeOffNext;
         public decimal speed;
-
+        public int lapsLed;
+        public int laps;
+        public string status;
     }
 }

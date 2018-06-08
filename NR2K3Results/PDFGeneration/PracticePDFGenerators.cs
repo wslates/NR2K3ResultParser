@@ -33,9 +33,10 @@ namespace NR2K3Results.PDFGeneration
 
                 //build title
                 StringBuilder title = new StringBuilder();
-                title.AppendLine("MENCS Practice 1");
+                title.AppendLine(series);
+                title.AppendLine(selectedSession);
                 title.AppendLine(track);
-                title.AppendLine("Pennzoil 400");
+                title.AppendLine(raceName);
 
 
                 PdfWriter write = PdfWriter.GetInstance(document, fs);

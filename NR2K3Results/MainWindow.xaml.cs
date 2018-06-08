@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace NR2K3Results
 {
@@ -29,10 +30,10 @@ namespace NR2K3Results
         private List<Driver> drivers;
         private string track = "";
         private decimal trackLength;
-
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private void Open_Roster(object sender, RoutedEventArgs e)
@@ -61,12 +62,13 @@ namespace NR2K3Results
 
             if (resultFile.ShowDialog() == true)
             {
+                string session = "Happy Hour";
                 string[] filePath = resultFile.FileName.Split('\\');
                 ResultFileTextBox.Text = filePath[filePath.Length - 1];
                 GetTrackData(resultFile.FileName);
-                NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName, trackLength);
+                NR2K3ResultParser.ResultParser.Parse(ref drivers, resultFile.FileName, ref session, trackLength);
                 drivers.Sort();
-                PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, null, null, null, track);
+                PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, "Monster Energy NASCAR Cup Series", "Happy Hour", "Pennzoil 400", track);
             } 
         }
 
@@ -120,6 +122,18 @@ namespace NR2K3Results
                             string length = splitLine[1];
                             length = Regex.Replace(length, "[^0-9.]", "");
                             trackLength = Convert.ToDecimal(length);
+                        }
+                        else if (splitLine[0].Trim().Equals("track_length_n_type"))
+                        {
+
+                        }
+                        else if (splitLine[0].Trim().Equals("track_city"))
+                        {
+
+                        }
+                        else if (splitLine[0].Trim().Equals("track_state"))
+                        {
+                            
                         }
                     }
                     //if we found the track, we should stop there
