@@ -62,8 +62,10 @@ namespace NR2K3Results.DriverAndResults
             if (GetFinish() == 1)
             {
                 return "---.---";
-            } 
-            
+            }  else if (result.timeOffLeader == .000001m)
+            {
+                return result.lapsDown;
+            }
             return Decimal.Round(result.timeOffLeader, 3).ToString();
         }
 

@@ -1,5 +1,4 @@
-﻿using CarFileParser;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using NR2K3Results.DriverAndResults;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NR2K3ResultParser
+namespace NR2K3Results.Parsers
 {
     class ResultParser
     {
@@ -30,12 +29,10 @@ namespace NR2K3ResultParser
 
             var tables = doc.DocumentNode.SelectNodes("//table");
             var sessions = doc.DocumentNode.SelectNodes("//h3").Where(x => x.InnerText.Contains("Session"));
-            Console.WriteLine(tables.ElementAt(0).SelectNodes("tr").Skip(1).Count());
             for (int i = 0; i < sessions.Count(); i++)
             {
                 if (tables[i].SelectNodes("tr").Count() > 1)
                 {
-                    Console.WriteLine("Count: " + tables[i].SelectNodes("tr").Count());
                     string sess = sessions.ElementAt(i).InnerText.Split(':')[1].Trim();
                     ranSession[sessionTypes[sess]] = true;
                 }
@@ -81,11 +78,12 @@ namespace NR2K3ResultParser
                 DriverResult driverRes = new DriverResult
                 {
                     finish = Convert.ToInt16(result[0]),
-                    time = Convert.ToDecimal(result[3]),
+                    time = (result[3].Equals("--")) ? 0 : Convert.ToDecimal(result[3]),
                     timeOffLeader = fastTime - Convert.ToDecimal(result[3]),
                     timeOffNext = prevTime - Convert.ToDecimal(result[3]),
                     speed = (length / Convert.ToDecimal(result[3])) * 3600
                 };
+
 
                 string[] name = result[2].Split(' ');
 
@@ -114,16 +112,22 @@ namespace NR2K3ResultParser
 
         private static void ParseRace(ref List<Driver> drivers, ref List<string> finalResults, ref decimal length)
         {
-            decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 6)[4]);
-            for (int i = 0; i < finalResults.Count - 3; i += 6)
+            //decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 9)[4]);
+            for (int i = 0; i < finalResults.Count - 8; i += 9)
             {
 
-                string[] result = finalResults.GetRange(i, 6).ToArray();
+                string[] result = finalResults.GetRange(i, 9).ToArray();
+
+                if(result[6].Contains('*'))
+                {
+                    result[6] = result[6].Replace("*", String.Empty);
+                }
                 DriverResult driverRes = new DriverResult
                 {
                     finish = Convert.ToInt16(result[0]),
                     start = Convert.ToInt16(result[1]),
-                    timeOffLeader = Convert.ToDecimal(result[4]),
+                    timeOffLeader = (result[4].Contains('L')) ? .000001m : Convert.ToDecimal(result[4]),
+                    lapsDown = (result[4].Contains('L')) ? result[4].Replace("L", String.Empty) : String.Empty,
                     laps = Convert.ToInt16(result[5]),
                     lapsLed = Convert.ToInt16(result[6]),
                     status = result[8]
@@ -133,7 +137,7 @@ namespace NR2K3ResultParser
 
                 Driver driver = new Driver
                 {
-                    number = result[3],
+                    number = result[2],
                     firstName = result[3][0].ToString(),
                     lastName = result[3].Substring(2, result[3].Length - 2),
                     result = driverRes

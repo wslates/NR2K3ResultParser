@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NR2K3Results.DriverAndResults;
 
-namespace CarFileParser
+namespace NR2K3Results.Parsers
 {
     class CarFileParser
     {

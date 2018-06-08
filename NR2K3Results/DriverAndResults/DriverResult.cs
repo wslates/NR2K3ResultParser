@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarFileParser;
+
 
 namespace NR2K3Results.DriverAndResults
 {
@@ -18,5 +18,6 @@ namespace NR2K3Results.DriverAndResults
         public int lapsLed;
         public int laps;
         public string status;
+        public string lapsDown;
     }
 }

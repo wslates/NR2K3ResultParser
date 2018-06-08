@@ -22,7 +22,7 @@ namespace NR2K3Results.PDFGeneration
             HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
         }
 
-        private static void HappyHourPracticePDFGen(List<Driver> drivers, string selectedSession, string series, string raceName, string track)
+        private static void HappyHourPracticePDFGen(List<Driver> drivers, string series, string selectedSession, string raceName, string track)
         {
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;
@@ -33,11 +33,10 @@ namespace NR2K3Results.PDFGeneration
 
                 //build title
                 StringBuilder title = new StringBuilder();
-                title.AppendLine(series);
-                title.AppendLine(selectedSession);
+                title.AppendLine(series);               
                 title.AppendLine(track);
                 title.AppendLine(raceName);
-
+                title.AppendLine(selectedSession);
 
                 PdfWriter write = PdfWriter.GetInstance(document, fs);
                 document.Open();
@@ -106,16 +105,16 @@ namespace NR2K3Results.PDFGeneration
                 table.AddCell(GenerateDriverCell(driver.number, driver.GetFinish(), 1, Element.ALIGN_RIGHT, ref widths));
                 table.AddCell(GenerateDriverCell(driver.firstName + " " + driver.lastName, driver.GetFinish(), 2, Element.ALIGN_LEFT, ref widths));
                 table.AddCell(GenerateDriverCell(driver.sponsor, driver.GetFinish(), 3, Element.ALIGN_LEFT, ref widths));
-                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish(), 4, Element.ALIGN_RIGHT, ref widths));
-                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish(), 5, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.team, driver.GetFinish(), 4, Element.ALIGN_LEFT, ref widths));
+
+                table.AddCell(GenerateDriverCell(driver.GetTime(), driver.GetFinish(), 5, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetSpeed(), driver.GetFinish(), 6, Element.ALIGN_RIGHT, ref widths));
 
                 string[] laps = GenerateLaps();
 
-                table.AddCell(GenerateDriverCell(laps[1], driver.GetFinish(), 6, Element.ALIGN_RIGHT, ref widths));
-                table.AddCell(GenerateDriverCell(laps[0], driver.GetFinish(), 7, Element.ALIGN_RIGHT, ref widths));
 
-                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish(), 8, Element.ALIGN_RIGHT, ref widths));
-                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish(), 9, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetOffLeader(), driver.GetFinish(), 7, Element.ALIGN_RIGHT, ref widths));
+                table.AddCell(GenerateDriverCell(driver.GetOffNext(), driver.GetFinish(), 8, Element.ALIGN_RIGHT, ref widths));
             }
 
             return table;
@@ -124,23 +123,25 @@ namespace NR2K3Results.PDFGeneration
         private static PdfPCell GenerateDriverCell(string data, int verPos, int horizPos, int justify, ref float[] widths)
         {
             int border = 0;
+            float fontSize = 9f;
 
+            if (data!=null)
+            {
+                while ((FontFactory.GetFont(FontFactory.HELVETICA, fontSize).BaseFont.GetWidthPoint(data, fontSize)) > widths[horizPos] * 4.25)
+                {
+                    fontSize -= .1f;       
+                }
+            }
+            
             //determine whether or not to have line underneath this row.
             if (verPos % 3 == 0)
             {
                 border = Rectangle.BOTTOM_BORDER;
             }
-
-            if (data.Length>10)
-            {
-                while (FontFactory.GetFont(FontFactory.HELVETICA, 9).BaseFont.GetWidthPoint(data, 9) > widths[horizPos] * 4.64)
-                {
-                    data = data.Substring(0, (data.Length - 1));
-                }
-            }
+            
            
             
-            return new PdfPCell(new Phrase(data, FontFactory.GetFont(FontFactory.HELVETICA, 9)))
+            return new PdfPCell(new Phrase(data, FontFactory.GetFont(FontFactory.HELVETICA, fontSize)))
             {
                 Border = border,
                 Colspan = 1,
